@@ -11,9 +11,9 @@
 
     HKUnit *count = [HKUnit countUnit];
     HKUnit *minute = [HKUnit minuteUnit];
-
     HKUnit *unit = [RCTAppleHealthKit hkUnitFromOptions:input key:@"unit" withDefault:[count unitDividedByUnit:minute]];
     NSUInteger limit = [RCTAppleHealthKit uintFromOptions:input key:@"limit" withDefault:HKObjectQueryNoLimit];
+    double minValue = [RCTAppleHealthKit doubleFromOptions:input key:@"minValue" withDefault:0];
     BOOL ascending = [RCTAppleHealthKit boolFromOptions:input key:@"ascending" withDefault:false];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
@@ -23,11 +23,12 @@
     }
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
 
-    [self fetchQuantitySamplesOfType:heartRateType
+    [self fetchQuantitySamplesOfTypeHeartRate:heartRateType
                                 unit:unit
                            predicate:predicate
                            ascending:ascending
                                limit:limit
+                            minValue:minValue
                           completion:^(NSArray *results, NSError *error) {
         if(results){
             callback(@[[NSNull null], results]);
