@@ -109,13 +109,13 @@
     [self.healthStore executeQuery:query];
 }
 
-- (void)fetchQuantitySamplesOfTypeHeartRate:(HKQuantityType *)quantityType
-                                       unit:(HKUnit *)unit
-                                  predicate:(NSPredicate *)predicate
-                                  ascending:(BOOL)asc
-                                      limit:(NSUInteger)lim
-                                   minValue:(double)minValue
-                                 completion:(void (^)(NSArray *, NSError *))completion {
+- (void)fetchQuantitySamplesOfTypeCustom:(HKQuantityType *)quantityType
+                                    unit:(HKUnit *)unit
+                               predicate:(NSPredicate *)predicate
+                               ascending:(BOOL)asc
+                                   limit:(NSUInteger)lim
+                                    type:(NSString *)type
+                              completion:(void (^)(NSArray *, NSError *))completion {
     
     NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate
                                                                        ascending:asc];
@@ -138,16 +138,16 @@
                 for (HKQuantitySample *sample in results) {
                     HKQuantity *quantity = sample.quantity;
                     double value = [quantity doubleValueForUnit:unit];
-                    if (value > minValue)  {
-                        NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
-                        
-                        NSDictionary *elem = @{
-                            @"value" : @(value),
-                            @"startDate" : startDateString,
-                        };
-                        
-                        [data addObject:elem];
-                    }
+                    
+                    NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
+                    
+                    NSDictionary *elem = @{
+                        @"metricType" : type,
+                        @"value" : @(value),
+                        @"date" : startDateString,
+                    };
+                    
+                    [data addObject:elem];
                 }
                 
                 completion(data, error);

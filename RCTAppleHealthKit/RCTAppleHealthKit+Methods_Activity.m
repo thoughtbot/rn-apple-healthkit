@@ -76,28 +76,31 @@
     HKQuantityType *exerciseType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
-    HKUnit *unit = [HKUnit secondUnit];
-
+    HKUnit *unit = [HKUnit minuteUnit];
+    
     if(startDate == nil){
         callback(@[RCTMakeError(@"startDate is required in options", nil, nil)]);
         return;
     }
-
-    [self fetchCumulativeSumStatisticsCollection:exerciseType
-                                            unit:unit
-                                        startDate:startDate
-                                            endDate:endDate
-                                        ascending:false
-                                            limit:HKObjectQueryNoLimit
-                                        completion:^(NSArray *results, NSError *error) {
-                                            if(results){
-                                                callback(@[[NSNull null], results]);
-                                                return;
-                                            } else {
-                                                NSLog(@"error getting exercise time: %@", error);
-                                                callback(@[RCTMakeError(@"error  getting exercise time", nil, nil)]);
-                                                return;
-                                            }
-                                        }];
+    
+    NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+    
+    
+    [self fetchQuantitySamplesOfType:exerciseType
+                                unit:unit
+                           predicate:predicate
+                           ascending:false
+                               limit:HKObjectQueryNoLimit
+                          completion:^(NSArray *results, NSError *error) {
+        if(results){
+            callback(@[[NSNull null], results]);
+            return;
+        } else {
+            NSLog(@"error getting exercise time: %@", error);
+            callback(@[RCTMakeError(@"error  getting exercise time", nil, nil)]);
+            return;
+        }
+    }];
 }
+
 @end

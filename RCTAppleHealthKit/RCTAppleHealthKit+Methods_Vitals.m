@@ -22,13 +22,14 @@
         return;
     }
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+    NSString *type = @"HR";
 
-    [self fetchQuantitySamplesOfTypeHeartRate:heartRateType
+    [self fetchQuantitySamplesOfTypeCustom:heartRateType
                                 unit:unit
                            predicate:predicate
                            ascending:ascending
                                limit:limit
-                            minValue:minValue
+                                type:type
                           completion:^(NSArray *results, NSError *error) {
         if(results){
             callback(@[[NSNull null], results]);
@@ -54,12 +55,14 @@
         return;
     }
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+    NSString *type = @"HRV";
 
-    [self fetchQuantitySamplesOfType:heartRateVariabilitySDNN
+    [self fetchQuantitySamplesOfTypeCustom:heartRateVariabilitySDNN
                                 unit:unit
                            predicate:predicate
                            ascending:ascending
                                limit:limit
+                                type:type
                           completion:^(NSArray *results, NSError *error) {
         if(results){
             callback(@[[NSNull null], results]);
@@ -140,10 +143,10 @@
                 HKQuantitySample *bloodPressureDiastolicValue = [bloodPressureValues objectsForType:diastolicType].anyObject;
 
                 NSDictionary *elem = @{
-                                       @"bloodPressureSystolicValue" : @([bloodPressureSystolicValue.quantity doubleValueForUnit:unit]),
-                                       @"bloodPressureDiastolicValue" : @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
-                                       @"startDate" : [sample valueForKey:@"startDate"],
-                                       @"endDate" : [sample valueForKey:@"endDate"],
+                                       @"metricType" : @"BP",
+                                       @"value" : @([bloodPressureSystolicValue.quantity doubleValueForUnit:unit]),
+                                       @"extraValue" : @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
+                                       @"date" : [sample valueForKey:@"startDate"],
                                       };
 
                 [data addObject:elem];

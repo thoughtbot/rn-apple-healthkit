@@ -43,12 +43,12 @@
                             ascending:(BOOL)asc
                                 limit:(NSUInteger)lim
                            completion:(void (^)(NSArray *, NSError *))completion;
-- (void)fetchQuantitySamplesOfTypeHeartRate:(HKQuantityType *)quantityType
+- (void)fetchQuantitySamplesOfTypeCustom:(HKQuantityType *)quantityType
                                        unit:(HKUnit *)unit
                                   predicate:(NSPredicate *)predicate
                                   ascending:(BOOL)asc
                                       limit:(NSUInteger)lim
-                                   minValue:(double)minValue
+                                   type:(NSString *)type
                                  completion:(void (^)(NSArray *, NSError *))completion;
 - (void)fetchCumulativeSumStatisticsCollection:(HKQuantityType *)quantityType
                                           unit:(HKUnit *)unit
