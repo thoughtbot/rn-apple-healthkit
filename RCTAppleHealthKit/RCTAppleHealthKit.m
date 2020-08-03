@@ -205,6 +205,11 @@ RCT_EXPORT_METHOD(getHeartRateVariabilitySamples:(NSDictionary *)input callback:
     [self vitals_getHeartRateVariabilitySamples:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getVo2MaxSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self vitals_getVo2MaxSamples:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getActiveEnergyBurned:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
    [self activity_getActiveEnergyBurned:input callback:callback];

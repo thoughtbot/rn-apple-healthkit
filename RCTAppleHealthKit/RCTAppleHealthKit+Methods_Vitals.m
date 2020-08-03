@@ -75,6 +75,39 @@
     }];
 }
 
+- (void)vitals_getVo2MaxSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    HKQuantityType *vo2Max = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierVO2Max];
+
+    NSUInteger limit = [RCTAppleHealthKit uintFromOptions:input key:@"limit" withDefault:HKObjectQueryNoLimit];
+    BOOL ascending = [RCTAppleHealthKit boolFromOptions:input key:@"ascending" withDefault:false];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+    if(startDate == nil){
+        callback(@[RCTMakeError(@"startDate is required in options", nil, nil)]);
+        return;
+    }
+    NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+    NSString *type = @"Vo2Max";
+
+    [self fetchQuantitySamplesOfTypeCustom:vo2Max
+                                unit:[HKUnit unitFromString:@"ml/kg*min"]
+                           predicate:predicate
+                           ascending:ascending
+                               limit:limit
+                                type:type
+                          completion:^(NSArray *results, NSError *error) {
+        if(results){
+            callback(@[[NSNull null], results]);
+            return;
+        } else {
+            NSLog(@"error getting heart rate variability samples: %@", error);
+            callback(@[RCTMakeError(@"error getting heart rate variability samples", nil, nil)]);
+            return;
+        }
+    }];
+}
+
 
 - (void)vitals_getBodyTemperatureSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
